@@ -8,7 +8,6 @@ class UserForm(forms.Form):
 	height = forms.IntegerField(min_value=0, max_value=500, help_text='centimeters')
 	weight = forms.IntegerField(min_value=0, max_value=500, help_text='kilos')
 
-
 class EditForm(forms.Form):
 	name = forms.CharField(required=False, max_length=20)
 	surname = forms.CharField(required=False, max_length=20)
@@ -20,10 +19,8 @@ class AdminForm(forms.Form):
 	login = forms.CharField(max_length=20)
 	password = forms.CharField(max_length=30)
 
-
 class UploadForm(forms.Form):
     csv_file = forms.FileField()
-
 
 class FindForm(forms.Form):
 	id = forms.CharField(required=False)

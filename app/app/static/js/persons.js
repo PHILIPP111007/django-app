@@ -8,8 +8,6 @@ function backgroundColorChange() {
 	}
 }
 
-
-
 var navButton = document.querySelector('nav button');
 navButton.addEventListener('click', function() {
     let expanded = this.getAttribute('aria-expanded') === 'true' || false;

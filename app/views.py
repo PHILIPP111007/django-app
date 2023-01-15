@@ -18,7 +18,7 @@ find_person_flag = False
 find_persons = None
 data = None
 redirect_path = '/app/form/'
-not_found_message = '<h2>Person not found</h2>'
+not_found_message = '<h2>Data not found</h2>'
 
 
 # home page output
@@ -329,11 +329,10 @@ def find_person(request):
 			if len(result_str) > 14:
 				find_persons = eval(result_str)
 				if not find_persons:
-					return HttpResponseNotFound("<h2>Persons not found</h2>")
+					return HttpResponseNotFound(not_found_message)
 				else:
 					data = find_persons
 					find_person_flag = True
 			else:
-				return HttpResponseNotFound("<h2>Persons not found</h2>")
-
+				return HttpResponseNotFound(not_found_message)
 		return HttpResponseRedirect(redirect_path)
