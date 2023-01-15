@@ -26,6 +26,8 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=20)),
                 ('surname', models.CharField(max_length=20)),
                 ('age', models.IntegerField()),
+                ('height', models.IntegerField()),
+                ('weight', models.IntegerField()),
             ],
         ),
     ]
