@@ -9,6 +9,7 @@ import io
 
 # Create your views here.
 
+# global variables
 flag = False
 login = 'undefined'
 register_error = False
@@ -16,17 +17,21 @@ csv_error = False
 find_person_flag = False
 find_persons = None
 data = None
+redirect_path = '/app/form/'
+not_found_message = '<h2>Person not found</h2>'
 
 
-
-# вывод всей бд
+# home page output
+# index() also calls make_statistics(), which activates the last function in the chain: make_result_dict()
+#
+# 1) make_statistics() creates statistics data
+# 2) make_result_dict() creates a result_dict, which index() returns as a context attribute of the render function
 def index(request):
-
 	result_dict = make_statistics()
 	return render(request, 'persons.html', result_dict)
 
 
-
+# creates statistics data
 def make_statistics():
 	people = Person.objects.all()
 	len_people = people.count()
@@ -77,7 +82,7 @@ def make_statistics():
 	return make_result_dict(people=people, statistics=statistics)
 
 
-
+# creates a result_dict, which index() returns as a context attribute of the render function
 def make_result_dict(people, statistics):
 	global flag
 	global register_error
@@ -115,7 +120,7 @@ def make_result_dict(people, statistics):
 
 
 
-# создание
+# record creation
 def create(request):
 	if request.method == 'POST' and flag:
 		name = request.POST.get('name')
@@ -124,49 +129,39 @@ def create(request):
 		height = request.POST.get('height')
 		weight = request.POST.get('weight')
 		Person.objects.create(name=name, surname=surname, age=age, height=height, weight=weight)
-		return HttpResponseRedirect("/app/form/")
+		return HttpResponseRedirect(redirect_path)
 
 	elif not flag:
 		return HttpResponse("<h2>You dont have access to do this</h2>")
 
 
-
-
-
-
-	 
-# удаление данных об одном персонаже из бд
+# deleting data about one character from the database
 def delete(request, id):
 	if flag:
 		try:
 			person = Person.objects.get(id=id)
 			person.delete()
-			return HttpResponseRedirect('/app/form/')
+			return HttpResponseRedirect(redirect_path)
 		except Person.DoesNotExist:
-			return HttpResponseNotFound("<h2>Person not found</h2>")
+			return HttpResponseNotFound(error_message)
 	elif not flag:
 		return HttpResponse("<h2>You dont have access to do this</h2>")
 
 
-# удаление всех данных из бд
+# deleting all data from the database
 def delete_all(request):
 	if flag:
 		Person.objects.all().delete()
-		return HttpResponseRedirect("/app/form/")
+		return HttpResponseRedirect(redirect_path)
 	elif not flag:
 		return HttpResponse("<h2>You dont have access to do this</h2>")
 
 
-
-
+# edit record data
 def edit(request, id):
-
 	try:
-		edit_person = Person.objects.get(id=id)
-
- 
+		edit_person = Person.objects.get(id=id) 
 		if request.method == "POST" and flag:
-
 			if request.POST.get('name') != '':
 				name = request.POST['name']
 			else:
@@ -197,7 +192,7 @@ def edit(request, id):
 			edit_person.height = height
 			edit_person.weight = weight
 			edit_person.save()
-			return HttpResponseRedirect("/app/form/")
+			return HttpResponseRedirect(redirect_path)
 
 		elif request.method == "GET" and flag:
 			editform = EditForm()
@@ -207,20 +202,20 @@ def edit(request, id):
 			return HttpResponse("<h2>You dont have access to do this</h2>")
 			
 	except Person.DoesNotExist:
-		return HttpResponseNotFound("<h2>Person not found</h2>")
+		return HttpResponseNotFound(not_found_message)
 
 
-
+# unlogin
 def quit(request):
 	global flag
 
 
 	if request.method == 'GET':
 		flag = False
-		return HttpResponseRedirect("/app/form/")
+		return HttpResponseRedirect(redirect_path)
 
 
-
+# login
 def register(request):
 	global flag
 	global login
@@ -228,20 +223,17 @@ def register(request):
 
 
 	if request.method == 'POST':
-
 		login = request.POST.get('login', 'undefined')
 		password = request.POST.get('password', 'undefined')
-
 		try:
 			Admin.objects.get(login=login, password=password)
 			flag = True
-			return HttpResponseRedirect("/app/form/")
 		except Admin.DoesNotExist:
 			register_error = True
-			return HttpResponseRedirect("/app/form/")
+		return HttpResponseRedirect(redirect_path)
 
 
-
+# uploading a .csv file to the database
 def upload(request):
 	global csv_error
 
@@ -250,7 +242,6 @@ def upload(request):
 		csv_file = request.FILES["csv_file"]
 		if not csv_file.name.endswith('.csv'):
 			csv_error = True
-
 		else:
 			decoded_file = csv_file.read().decode('utf-8')
 			io_string = io.StringIO(decoded_file)
@@ -264,13 +255,11 @@ def upload(request):
 					Person.objects.create(name=name, surname=surname, age=age, height=height, weight=weight)
 				except Exception:
 					pass
-
-		return HttpResponseRedirect("/app/form/")
-
+		return HttpResponseRedirect(redirect_path)
 
 
+# creating an HttpResponse object with the corresponding CSV header
 def make_csv_file_from_sql(data):
-	# Create the HttpResponse object with the appropriate CSV header.
 	response = HttpResponse(content_type='text/csv')
 	response['Content-Disposition'] = 'attachment; filename="data.csv"'
 
@@ -280,26 +269,25 @@ def make_csv_file_from_sql(data):
 
 	for obj in data:
 		writer.writerow({'id': obj.id, 'name': obj.name, 'surname': obj.surname, 'age': obj.age, 'height': obj.height, 'weight': obj.weight})
-
 	return response
 
 
-
-
+# the first function in the process of creating a .csv file from MAIN table to download
+# returns the make_csv_file_from_sql() function, which creates a .csv file
 def export_all(request):
-
 	if request.method == 'GET':
 		data = Person.objects.all()
 		return make_csv_file_from_sql(data)
 
 
+# the first function in the process of creating a .csv file from RESULT table to download
+# returns the make_csv_file_from_sql() function, which creates a .csv file
 def export_data_from_find_person(request):
-
 	if request.method == 'GET':
 		return make_csv_file_from_sql(data)
 
 
-
+# record search
 def find_person(request):
 	global find_person_flag
 	global find_persons
@@ -307,7 +295,6 @@ def find_person(request):
 
 
 	if request.method == 'GET':
-
 		id = request.GET.get('id')
 		if id != '' and id.isdigit():
 			find_persons = Person.objects.filter(id=id)
@@ -315,7 +302,7 @@ def find_person(request):
 				find_person_flag = True
 				data = find_persons
 			else:
-				return HttpResponseNotFound("<h2>Person not found</h2>")
+				return HttpResponseNotFound(not_found_message)
 		else:
 			result_str = 'Person.objects'
 
@@ -327,21 +314,17 @@ def find_person(request):
 			if surname != '':
 				result_str += f'.filter(surname="{surname}")'
 
-
 			age = request.GET.get('age')
 			if age != '' and age.isdigit():
 				result_str += f'.filter(age={age})'
 			
-
 			height = request.GET.get('height')
 			if height != '' and height.isdigit():
 				result_str += f'.filter(height={height})'
-			
 
 			weight = request.GET.get('weight')
 			if weight != '' and weight.isdigit():
 				result_str += f'.filter(weight={weight})'
-
 
 			if len(result_str) > 14:
 				find_persons = eval(result_str)
@@ -353,7 +336,4 @@ def find_person(request):
 			else:
 				return HttpResponseNotFound("<h2>Persons not found</h2>")
 
-		return HttpResponseRedirect("/app/form/")
-
-
-
+		return HttpResponseRedirect(redirect_path)

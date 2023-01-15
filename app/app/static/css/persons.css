@@ -11,7 +11,6 @@ body {
 }
 
 
-
 .form input {
 	border-radius: 7px;
 	border-color: gray;
@@ -29,7 +28,6 @@ body {
 	padding: 10px 20px;
 	background-color: rgb(235,235,235);
 }
-
 
 
 .admin {
@@ -50,11 +48,9 @@ body {
 }
 
 
-
 #navigation {
 	margin-top: 7px;
 }
-
 .settings-list {
 	margin-top: 10px;
 	margin-left: -10px;
@@ -62,7 +58,6 @@ body {
 	background-color: rgb(235,235,235);
 	border: 1px solid black;
 }
-
 
 
 .register {
@@ -74,8 +69,6 @@ body {
 	padding-bottom: 75px;
 	background: rgb(235,235,235);
 }
-
-
 
 
 .add_person {
@@ -91,16 +84,10 @@ body {
 }
 
 
-
-
-
 .find_person {
 	margin-top: 20px;
 	margin-bottom: 40px;
 }
-
-
-
 
 
 .persons-table {
@@ -109,13 +96,13 @@ body {
 	margin-bottom: 100px;
 }
 
+
 .buttons {
 	display: inline-block;
 	margin-top: 15px;
 	margin-bottom: 100px;
 	margin-left: 10px;
 	border: 1px solid rgb(190,190,190);
-	background-color: rgb(242, 242, 242);
 }
 .buttons #upload {
 	border: 1px solid rgb(190,190,190);
@@ -125,9 +112,10 @@ body {
 	margin-left: 10px;
 }
 
+
 #statistics {
-	padding-top: 12px;
 	float: left;
+	padding-top: 12px;
 	text-align: left;
 }
 #statistics td {
