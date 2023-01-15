@@ -4,7 +4,13 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Persons table</title>
+	
+	{% if register_flag %}
+		<title>Admin page</title>
+	{% else %}
+		<title>Welcome page</title>
+	{% endif %}
+
 	<link rel="stylesheet" href='{% static "css/persons.css" %}'>
 
 </head>
