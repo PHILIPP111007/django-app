@@ -104,12 +104,13 @@ body {
 
 
 .persons-table {
-	float: left;
+	float: right;
 	display: flex;
+	margin-bottom: 100px;
 }
 
 .buttons {
-	display: inline-flex;
+	display: inline-block;
 	margin-top: 15px;
 	margin-bottom: 100px;
 	margin-left: 10px;
@@ -126,7 +127,7 @@ body {
 
 #statistics {
 	padding-top: 12px;
-	float: right;
+	float: left;
 	text-align: left;
 }
 #statistics td {

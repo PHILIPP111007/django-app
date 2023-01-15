@@ -15,7 +15,6 @@ register_error = False
 csv_error = False
 find_person_flag = False
 find_persons = None
-edit_person = '1'
 data = None
 
 
@@ -36,15 +35,44 @@ def make_statistics():
 		avg_age = round(tuple(Person.objects.aggregate(Avg("age")).values())[0], 2)
 	except TypeError:
 		avg_age = None
+	
+	try:
+		avg_height = round(tuple(Person.objects.aggregate(Avg("height")).values())[0], 2)
+	except TypeError:
+		avg_height = None
+	
+	try:
+		avg_weight = round(tuple(Person.objects.aggregate(Avg("weight")).values())[0], 2)
+	except TypeError:
+		avg_weight = None
 
 	min_age = tuple(Person.objects.aggregate(Min("age")).values())[0]
 	max_age = tuple(Person.objects.aggregate(Max("age")).values())[0]
 	sum_age = tuple(Person.objects.aggregate(Sum("age")).values())[0]
+
+	min_height = tuple(Person.objects.aggregate(Min("height")).values())[0]
+	max_height = tuple(Person.objects.aggregate(Max("height")).values())[0]
+	sum_height = tuple(Person.objects.aggregate(Sum("height")).values())[0]
+
+	min_weight = tuple(Person.objects.aggregate(Min("weight")).values())[0]
+	max_weight = tuple(Person.objects.aggregate(Max("weight")).values())[0]
+	sum_weight = tuple(Person.objects.aggregate(Sum("weight")).values())[0]
+
 	statistics = {'len_people': len_people, 
 				'avg_age': avg_age, 
 				'min_age': min_age, 
 				'max_age': max_age, 
-				'sum_age': sum_age
+				'sum_age': sum_age,
+
+				'avg_height': avg_height, 
+				'min_height': min_height, 
+				'max_height': max_height, 
+				'sum_height': sum_height,
+
+				'avg_weight': avg_weight, 
+				'min_weight': min_weight, 
+				'max_weight': max_weight, 
+				'sum_weight': sum_weight
 				}
 	return make_result_dict(people=people, statistics=statistics)
 
@@ -132,8 +160,6 @@ def delete_all(request):
 
 
 def edit(request, id):
-	global edit_person
-
 
 	try:
 		edit_person = Person.objects.get(id=id)
@@ -305,22 +331,16 @@ def find_person(request):
 			age = request.GET.get('age')
 			if age != '' and age.isdigit():
 				result_str += f'.filter(age={age})'
-			else:
-				return HttpResponseNotFound("<h2>Persons not found</h2>")
 			
 
 			height = request.GET.get('height')
 			if height != '' and height.isdigit():
 				result_str += f'.filter(height={height})'
-			else:
-				return HttpResponseNotFound("<h2>Persons not found</h2>")
 			
 
 			weight = request.GET.get('weight')
 			if weight != '' and weight.isdigit():
 				result_str += f'.filter(weight={weight})'
-			else:
-				return HttpResponseNotFound("<h2>Persons not found</h2>")
 
 
 			if len(result_str) > 14:
