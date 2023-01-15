@@ -175,10 +175,11 @@
 			<button>Delete all data</button>
 		</a>
 		{% endif %}
-
-		<a href="export_all/">
-			<button>Export all as CSV</button>
-		</a>
+		{% if people %}
+			<a href="export_all/">
+				<button>Export all as CSV</button>
+			</a>
+		{% endif %}
 	</div>
 
 	<div class="persons-table">
