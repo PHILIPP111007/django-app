@@ -5,14 +5,16 @@ class UserForm(forms.Form):
 	name = forms.CharField(max_length=20, help_text='Write name')
 	surname = forms.CharField(max_length=20, help_text='Write surname')
 	age = forms.IntegerField(min_value=0, max_value=120, help_text='Write age')
+	height = forms.IntegerField(min_value=0, help_text='Write height')
+	weight = forms.IntegerField(min_value=0, help_text='Write weight')
 
 
 class EditForm(forms.Form):
 	name = forms.CharField(required=False, max_length=20)
 	surname = forms.CharField(required=False, max_length=20)
 	age = forms.CharField(required=False, max_length=3)
-
-
+	height = forms.CharField(required=False, max_length=4)
+	weight = forms.CharField(required=False, max_length=4)
 
 class AdminForm(forms.Form):
 	login = forms.CharField(max_length=20)
@@ -28,3 +30,5 @@ class FindForm(forms.Form):
 	name = forms.CharField(required=False, max_length=20)
 	surname = forms.CharField(required=False, max_length=20)
 	age = forms.CharField(required=False, max_length=3)
+	height = forms.CharField(required=False, max_length=4)
+	weight = forms.CharField(required=False, max_length=4)

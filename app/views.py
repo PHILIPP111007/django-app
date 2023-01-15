@@ -22,12 +22,13 @@ data = None
 
 # вывод всей бд
 def index(request):
-	global flag
-	global register_error
-	global csv_error
-	global find_person_flag
+
+	result_dict = make_statistics()
+	return render(request, 'persons.html', result_dict)
 
 
+
+def make_statistics():
 	people = Person.objects.all()
 	len_people = people.count()
 
@@ -45,7 +46,15 @@ def index(request):
 				'max_age': max_age, 
 				'sum_age': sum_age
 				}
+	return make_result_dict(people=people, statistics=statistics)
 
+
+
+def make_result_dict(people, statistics):
+	global flag
+	global register_error
+	global csv_error
+	global find_person_flag
 
 
 	result_dict = {'userform': UserForm(), 
@@ -73,8 +82,8 @@ def index(request):
 	if find_person_flag:
 		find_person_flag = False
 		result_dict['find_person_flag'] = True
-
-	return render(request, 'persons.html', result_dict)
+	
+	return result_dict
 
 
 
@@ -89,6 +98,10 @@ def create(request):
 
 	elif not flag:
 		return HttpResponse("<h2>You dont have access to do this</h2>")
+
+
+
+
 
 
 	 
