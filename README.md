@@ -21,4 +21,6 @@ After logging in as a system administrator you can:
 4) save all records as a .csv file
 5) Search for entries, for this you will see the form on the page (the search includes a filtering function, for example you can search for users who have the age of 20). As a result of the search you will see a table with the result, which can also be saved as a .csv file
 
+I have uploaded the random_data.csv file for you to familiarize yourself with the functionality of the application
+
 Have fun!
