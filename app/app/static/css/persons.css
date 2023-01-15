@@ -108,6 +108,7 @@ a {
 	margin-left: 10px;
 	margin-right: -20px;
 	border: 1px solid rgb(190,190,190);
+	background-color: rgb(235,235,235);
 }
 .buttons #upload {
 	border: 1px solid rgb(190,190,190);

@@ -11,7 +11,7 @@
 
 <body>
 	<div id="upper-div"></div>
-	{% if not flag %}
+	{% if not register_flag %}
 		<div class="register">
 			<form method="POST" action="register/">
 				{% csrf_token %}
@@ -26,7 +26,7 @@
 		</div>
 	{% endif %}
 
-	{% if flag %}
+	{% if register_flag %}
 		<div class="admin">
 			<p>{{ login }}</p>
 			<nav id="navigation">
@@ -76,8 +76,8 @@
 						<th>name</th>
 						<th>surname</th>
 						<th>age</th>
-						<th>height [cm]</th>
-						<th>weight [kilos]</th>
+						<th>height<br>[cm]</th>
+						<th>weight<br>[kilos]</th>
 						<th>actions</th>
 					</tr>
 				</thead>
@@ -160,7 +160,7 @@
 	{% endif %}
 
 	<div class="buttons">
-		{% if flag %}
+		{% if register_flag %}
 		<form id="upload" method="POST" enctype="multipart/form-data" action="upload/">
 			{% csrf_token %}
 			{{ uploadform.as_p }}
@@ -191,9 +191,9 @@
 					<th>name</th>
 					<th>surname</th>
 					<th>age</th>
-					<th>heigh [cm]</th>
-					<th>weight [kilos]</th>
-					{% if flag and people %}
+					<th>heigh<br>[cm]</th>
+					<th>weight<br>[kilos]</th>
+					{% if register_flag and people %}
 						<th>actions</th>
 					{% endif %}
 				</tr>
@@ -209,7 +209,7 @@
 							<td>{{ person.age }}</td>
 							<td>{{ person.height }}</td>
 							<td>{{ person.weight }}</td>
-							{% if flag %}
+							{% if register_flag %}
 								<td><a href="edit/{{ person.id }}"><input type="submit" value="Edit"></a> <a href="delete/{{ person.id }}/"><input type="submit" value="Delete"></a></td>
 							{% endif %}
 						</tr>

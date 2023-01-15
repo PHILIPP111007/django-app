@@ -10,7 +10,7 @@ import io
 # Create your views here.
 
 # global variables
-flag = False
+register_flag = False
 login = 'undefined'
 register_error = False
 csv_error = False
@@ -84,7 +84,7 @@ def make_statistics():
 
 # creates a result_dict, which index() returns as a context attribute of the render function
 def make_result_dict(people, statistics):
-	global flag
+	global register_flag
 	global register_error
 	global csv_error
 	global find_person_flag
@@ -98,7 +98,7 @@ def make_result_dict(people, statistics):
 				'find_persons': find_persons, 
 				'findform': FindForm(), 
 				'statistics': statistics, 
-				'flag': flag, 
+				'register_flag': register_flag, 
 				'login': login, 
 				'register_error': False, 
 				'csv_error': False
@@ -119,10 +119,9 @@ def make_result_dict(people, statistics):
 	return result_dict
 
 
-
 # record creation
 def create(request):
-	if request.method == 'POST' and flag:
+	if request.method == 'POST' and register_flag:
 		name = request.POST.get('name')
 		surname = request.POST.get('surname')
 		age = request.POST.get('age')
@@ -130,60 +129,59 @@ def create(request):
 		weight = request.POST.get('weight')
 		Person.objects.create(name=name, surname=surname, age=age, height=height, weight=weight)
 		return HttpResponseRedirect(redirect_path)
-
-	elif not flag:
+	elif not register_flag:
 		return HttpResponse("<h2>You dont have access to do this</h2>")
 
 
 # deleting data about one character from the database
 def delete(request, id):
-	if flag:
+	if register_flag:
 		try:
 			person = Person.objects.get(id=id)
 			person.delete()
 			return HttpResponseRedirect(redirect_path)
 		except Person.DoesNotExist:
-			return HttpResponseNotFound(error_message)
-	elif not flag:
+			return HttpResponseNotFound(not_found_message)
+	elif not register_flag:
 		return HttpResponse("<h2>You dont have access to do this</h2>")
 
 
 # deleting all data from the database
 def delete_all(request):
-	if flag:
+	if register_flag:
 		Person.objects.all().delete()
 		return HttpResponseRedirect(redirect_path)
-	elif not flag:
+	elif not register_flag:
 		return HttpResponse("<h2>You dont have access to do this</h2>")
 
 
 # edit record data
+#
+# this function allows you to make selective changes, that is, you can change 
+# only the age of the person in the record, and the rest will remain the same
 def edit(request, id):
 	try:
 		edit_person = Person.objects.get(id=id) 
-		if request.method == "POST" and flag:
-			if request.POST.get('name') != '':
-				name = request.POST['name']
-			else:
+		if request.method == "POST" and register_flag:
+			
+			name = request.POST.get('name')
+			if name == '':
 				name = edit_person.name
-			if request.POST.get('surname') != '':
-				surname = request.POST['surname']
-			else:
+
+			surname = request.POST.get('surname')
+			if surname == '':
 				surname = edit_person.surname
+
 			age = request.POST.get('age')
-			if age != '' and age.isdigit() and 0 <= int(age) <= 120:
-				pass
-			else:
+			if not (age != '' and age.isdigit() and 0 <= int(age) <= 120):
 				age = edit_person.age
+
 			height = request.POST.get('height')
-			if height != '' and height.isdigit():
-				pass
-			else:
+			if not (height != '' and height.isdigit()):
 				height = edit_person.height
+
 			weight = request.POST.get('weight')
-			if weight != '' and weight.isdigit():
-				pass
-			else:
+			if not (weight != '' and weight.isdigit()):
 				weight = edit_person.weight
 
 			edit_person.name = name
@@ -194,11 +192,11 @@ def edit(request, id):
 			edit_person.save()
 			return HttpResponseRedirect(redirect_path)
 
-		elif request.method == "GET" and flag:
+		elif request.method == "GET" and register_flag:
 			editform = EditForm()
 			return render(request, "edit.html", {"editform": editform, 'edit_person': edit_person})
 
-		elif not flag:
+		elif not register_flag:
 			return HttpResponse("<h2>You dont have access to do this</h2>")
 			
 	except Person.DoesNotExist:
@@ -207,27 +205,27 @@ def edit(request, id):
 
 # unlogin
 def quit(request):
-	global flag
+	global register_flag
 
 
 	if request.method == 'GET':
-		flag = False
+		register_flag = False
 		return HttpResponseRedirect(redirect_path)
 
 
 # login
 def register(request):
-	global flag
+	global register_flag
 	global login
 	global register_error
 
 
 	if request.method == 'POST':
-		login = request.POST.get('login', 'undefined')
-		password = request.POST.get('password', 'undefined')
+		login = request.POST.get('login')
+		password = request.POST.get('password')
 		try:
 			Admin.objects.get(login=login, password=password)
-			flag = True
+			register_flag = True
 		except Admin.DoesNotExist:
 			register_error = True
 		return HttpResponseRedirect(redirect_path)
@@ -268,7 +266,13 @@ def make_csv_file_from_sql(data):
 	writer.writeheader()
 
 	for obj in data:
-		writer.writerow({'id': obj.id, 'name': obj.name, 'surname': obj.surname, 'age': obj.age, 'height': obj.height, 'weight': obj.weight})
+		writer.writerow({'id': obj.id, 
+						'name': obj.name, 
+						'surname': obj.surname, 
+						'age': obj.age, 
+						'height': obj.height, 
+						'weight': obj.weight
+		})
 	return response
 
 
@@ -328,11 +332,11 @@ def find_person(request):
 
 			if len(result_str) > 14:
 				find_persons = eval(result_str)
-				if not find_persons:
-					return HttpResponseNotFound(not_found_message)
-				else:
+				if find_persons:
 					data = find_persons
 					find_person_flag = True
+				else:
+					return HttpResponseNotFound(not_found_message)
 			else:
 				return HttpResponseNotFound(not_found_message)
 		return HttpResponseRedirect(redirect_path)

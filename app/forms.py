@@ -2,9 +2,9 @@ from django import forms
 
 
 class UserForm(forms.Form):
-	name = forms.CharField(max_length=20, help_text='Write name')
-	surname = forms.CharField(max_length=20, help_text='Write surname')
-	age = forms.IntegerField(min_value=0, max_value=120, help_text='Write age')
+	name = forms.CharField(max_length=20)
+	surname = forms.CharField(max_length=20)
+	age = forms.IntegerField(min_value=0, max_value=120)
 	height = forms.IntegerField(min_value=0, max_value=500, help_text='centimeters')
 	weight = forms.IntegerField(min_value=0, max_value=500, help_text='kilos')
 
