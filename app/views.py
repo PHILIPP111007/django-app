@@ -92,8 +92,10 @@ def create(request):
 	if request.method == 'POST' and flag:
 		name = request.POST.get('name')
 		surname = request.POST.get('surname')
-		age = request.POST.get('age') 
-		Person.objects.create(name=name, surname=surname, age=age)
+		age = request.POST.get('age')
+		height = request.POST.get('height')
+		weight = request.POST.get('weight')
+		Person.objects.create(name=name, surname=surname, age=age, height=height, weight=weight)
 		return HttpResponseRedirect("/app/form/")
 
 	elif not flag:
@@ -152,10 +154,22 @@ def edit(request, id):
 				pass
 			else:
 				age = edit_person.age
+			height = request.POST.get('height')
+			if height != '' and height.isdigit():
+				pass
+			else:
+				height = edit_person.height
+			weight = request.POST.get('weight')
+			if weight != '' and weight.isdigit():
+				pass
+			else:
+				weight = edit_person.weight
 
 			edit_person.name = name
 			edit_person.surname = surname
 			edit_person.age = age
+			edit_person.height = height
+			edit_person.weight = weight
 			edit_person.save()
 			return HttpResponseRedirect("/app/form/")
 
@@ -218,8 +232,10 @@ def upload(request):
 				try:
 					name = line[0]
 					surname = line[1]
-					age = line[2] 
-					Person.objects.create(name=name, surname=surname, age=age)
+					age = line[2]
+					height = line[3]
+					weight = line[4]
+					Person.objects.create(name=name, surname=surname, age=age, height=height, weight=weight)
 				except Exception:
 					pass
 
@@ -232,12 +248,12 @@ def make_csv_file_from_sql(data):
 	response = HttpResponse(content_type='text/csv')
 	response['Content-Disposition'] = 'attachment; filename="data.csv"'
 
-	fieldnames = ['id', 'name', 'surname', 'age']
+	fieldnames = ['id', 'name', 'surname', 'age', 'height', 'weight']
 	writer = csv.DictWriter(response, fieldnames=fieldnames)
 	writer.writeheader()
 
 	for obj in data:
-		writer.writerow({'id': obj.id, 'name': obj.name, 'surname': obj.surname, 'age': obj.age})
+		writer.writerow({'id': obj.id, 'name': obj.name, 'surname': obj.surname, 'age': obj.age, 'height': obj.height, 'weight': obj.weight})
 
 	return response
 
@@ -289,6 +305,20 @@ def find_person(request):
 			age = request.GET.get('age')
 			if age != '' and age.isdigit():
 				result_str += f'.filter(age={age})'
+			else:
+				return HttpResponseNotFound("<h2>Persons not found</h2>")
+			
+
+			height = request.GET.get('height')
+			if height != '' and height.isdigit():
+				result_str += f'.filter(height={height})'
+			else:
+				return HttpResponseNotFound("<h2>Persons not found</h2>")
+			
+
+			weight = request.GET.get('weight')
+			if weight != '' and weight.isdigit():
+				result_str += f'.filter(weight={weight})'
 			else:
 				return HttpResponseNotFound("<h2>Persons not found</h2>")
 
