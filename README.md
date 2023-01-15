@@ -1,15 +1,17 @@
 # django-app
 
-Hello everyone! This is my first Django application. It is designed to work with a table. I created a primitive model that describes a person (first name, last name, age). Pretty little information, but you can easily change the models and forms if you want, also add more fields for statistics.
+For starting the app use localhost/app/form/ link
+
+Hello everyone! This is my first Django application. It is designed to work with a table. I created a primitive model that describes a person (first name, last name, age, height, weight). Pretty little information, but you can change the models and forms if you want, also add more fields for statistics.
 
 When you start the application you will see the first page where you can see the table and a small statistic accompanying it, you can also see a field for the user to log in as an administrator. The table cannot be changed until you enter your login and password.
 
-I recorded the login and password in the SQLite model.
+I recorded the login and password in the SQLite table.
 
 #### Login: admin
 #### Password: admin
 
-You can change this information in the database if you want, or you can enter more.
+You can change this information in the database if you want, or you can enter more records.
 
 After logging in as a system administrator you can:
 

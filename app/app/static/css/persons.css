@@ -4,6 +4,10 @@ body {
 	background-color: rgb(250, 244, 244);
 }
 
+a {
+	text-decoration: none;
+}
+
 
 #upper-div {
 	margin-top: 100px;
@@ -102,14 +106,15 @@ body {
 	margin-top: 15px;
 	margin-bottom: 100px;
 	margin-left: 10px;
+	margin-right: -20px;
 	border: 1px solid rgb(190,190,190);
 }
 .buttons #upload {
 	border: 1px solid rgb(190,190,190);
 }
-.buttons #delete_all {
-	margin-top: 15px;
-	margin-left: 10px;
+.buttons a {
+	margin-right: 20px;
+
 }
 
 
