@@ -85,7 +85,7 @@ def create(request):
 		surname = request.POST.get('surname')
 		age = request.POST.get('age') 
 		Person.objects.create(name=name, surname=surname, age=age)
-		return HttpResponseRedirect("/phil_1/form/")
+		return HttpResponseRedirect("/app/form/")
 
 	elif not flag:
 		return HttpResponse("<h2>You dont have access to do this</h2>")
@@ -98,7 +98,7 @@ def delete(request, id):
 		try:
 			person = Person.objects.get(id=id)
 			person.delete()
-			return HttpResponseRedirect('/phil_1/form/')
+			return HttpResponseRedirect('/app/form/')
 		except Person.DoesNotExist:
 			return HttpResponseNotFound("<h2>Person not found</h2>")
 	elif not flag:
@@ -109,7 +109,7 @@ def delete(request, id):
 def delete_all(request):
 	if flag:
 		Person.objects.all().delete()
-		return HttpResponseRedirect("/phil_1/form/")
+		return HttpResponseRedirect("/app/form/")
 	elif not flag:
 		return HttpResponse("<h2>You dont have access to do this</h2>")
 
@@ -144,7 +144,7 @@ def edit(request, id):
 			edit_person.surname = surname
 			edit_person.age = age
 			edit_person.save()
-			return HttpResponseRedirect("/phil_1/form/")
+			return HttpResponseRedirect("/app/form/")
 
 		elif request.method == "GET" and flag:
 			editform = EditForm()
@@ -164,7 +164,7 @@ def quit(request):
 
 	if request.method == 'GET':
 		flag = False
-		return HttpResponseRedirect("/phil_1/form/")
+		return HttpResponseRedirect("/app/form/")
 
 
 
@@ -182,10 +182,10 @@ def register(request):
 		try:
 			Admin.objects.get(login=login, password=password)
 			flag = True
-			return HttpResponseRedirect("/phil_1/form/")
+			return HttpResponseRedirect("/app/form/")
 		except Admin.DoesNotExist:
 			register_error = True
-			return HttpResponseRedirect("/phil_1/form/")
+			return HttpResponseRedirect("/app/form/")
 
 
 
@@ -210,7 +210,7 @@ def upload(request):
 				except Exception:
 					pass
 
-		return HttpResponseRedirect("/phil_1/form/")
+		return HttpResponseRedirect("/app/form/")
 
 
 
@@ -290,7 +290,7 @@ def find_person(request):
 			else:
 				return HttpResponseNotFound("<h2>Persons not found</h2>")
 
-		return HttpResponseRedirect("/phil_1/form/")
+		return HttpResponseRedirect("/app/form/")
 
 
 
