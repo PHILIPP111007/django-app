@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+{% load static %}  <!-- Загрузка папки static (статические файлы) -->
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Persons table</title>
+	<link rel="stylesheet" href='{% static "css/persons.css" %}'>
+
+</head>
+
+<body>
+
+	<div id="upper-div"></div>
+
+	{% if not flag %}
+	<div class="register">
+		<form method="POST" action="register/">
+			{% csrf_token %}
+			<table class="form">
+				{{ adminform }}
+			</table>
+			<input type="submit" value="Register">
+		</form>
+		{% if register_error %}
+			<h3 style="color: red; font-size: 13px;">Not found</h3>
+		{% endif %}
+	</div>
+	{% endif %}
+
+	{% if flag %}
+	<div class="admin">
+		<p>{{ login }}</p>
+		<nav id="navigation">
+    		<button aria-expanded="false">Settings</button>
+    		<div class="settings-list" hidden>
+        		<button onclick="backgroundColorChange()">Change theme</button>
+        		<form method="GET" action="quit/">
+					<input type="submit" value="Quit">
+				</form>
+    		</div>
+		</nav>
+	</div>
+
+
+	<div class="add_person">
+		<form method="POST" action="create/">
+			{% csrf_token %}
+			<caption>Here you can add a person:</caption>
+			<table class="form">
+				{{ userform }}
+			</table>
+			<input type="submit" value="Add">
+		</form>
+	</div>
+
+	<div class="add_person">
+		<form method="GET" action="find_person/">
+			{% csrf_token %}
+			<caption>Find a person:</caption>
+			<table class="form">
+				{{ findform }}
+			</table>
+			<input type="submit" value="Find">
+		</form>
+	</div>
+
+	{% if find_person_flag %}
+		<div class="find_person">
+			<table id="find_person" class="table">
+			<caption style="color: green; font-weight: bold;">Result</caption>
+			<a href="export_data_from_find_person/">
+				<button>Export data as CSV</button>
+			</a>
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>name</th>
+					<th>surname</th>
+					<th>age</th>
+					<th>actions</th>
+				</tr>
+			</thead>
+
+			<tbody>
+			{% for person in find_persons %}
+				<tr>
+					<td>{{ person.id }}</td>
+					<td>{{ person.name }}</td>
+					<td>{{ person.surname }}</td>
+					<td>{{ person.age }}</td>
+					<td><a href="edit/{{ person.id }}"><input type="submit" value="Edit"></a> <a href="delete/{{ person.id }}/"><input type="submit" value="Delete"></a></td>
+				</tr>
+			{% endfor %}
+			</tbody>
+			</table>
+			</div>
+	{% endif %}
+	{% endif %}
+
+
+	<div class="persons-table">
+	<table class="table">
+		<caption>Our persons (total: {{ statistics.len_people }})</caption>
+
+		<thead>
+			<tr>
+				<th>id</th>
+				<th>name</th>
+				<th>surname</th>
+				<th>age</th>
+				{% if flag and people %}
+					<th>actions</th>
+				{% endif %}
+			</tr>
+		</thead>
+			
+		<tbody>
+			{% if people %}
+				{% for person in people %}
+					<tr>
+						<td>{{ person.id }}</td>
+						<td>{{ person.name }}</td>
+						<td>{{ person.surname }}</td>
+						<td>{{ person.age }}</td>
+
+						{% if flag %}
+							<td><a href="edit/{{ person.id }}"><input type="submit" value="Edit"></a> <a href="delete/{{ person.id }}/"><input type="submit" value="Delete"></a></td>
+						{% endif %}
+					</tr>
+				{% endfor %}
+			{% else %}
+				<tr>
+					<td>No data</td>
+					<td>No data</td>
+					<td>No data</td>
+					<td>No data</td>
+				</tr>
+			{% endif %}
+		</tbody>
+	</table>
+	</div>
+
+	{% if flag %}
+	<div class="buttons">
+
+		<form id="upload" method="POST" enctype="multipart/form-data" action="upload/">
+    		{% csrf_token %}
+    		{{ uploadform.as_p }}
+    		<br/>
+    		<input type="submit" value="Upload to table" name="csv_file">
+    		{% if csv_error %}
+				<h3 style="color: red;">error</h3>
+			{% endif %}
+		</form>
+
+		<a href="export_all/">
+			<button>Export all as CSV</button>
+		</a>
+
+		<a href="delete_all/">
+			<button>Delete all data</button>
+		</a>
+
+	</div>
+	{% endif %}
+
+	{% if people %}
+		<table id="statistics" class="table">
+			<caption>Statistics</caption>
+			<tr>
+				<td>avarage age</td>
+				<td>{{ statistics.avg_age }}</td>
+			</tr>
+			<tr>
+				<td>min age</td>
+				<td>{{ statistics.min_age }}</td>
+			</tr>
+			<tr>
+				<td>max age</td>
+				<td>{{ statistics.max_age }}</td>
+			</tr>
+			<tr>
+				<td>sum of all ages</td>
+				<td>{{ statistics.sum_age }}</td>
+			</tr>
+			
+		</table>
+	{% endif %}
+
+	<script src="{% static 'js/persons.js' %}" type="text/javascript" charset="utf-8" async defer></script>
+</body>
+</html>

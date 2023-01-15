@@ -1,0 +1,135 @@
+body {
+	font-family: sans-serif;
+	color: gray;
+	background-color: rgb(250, 244, 244);
+}
+
+
+#upper-div {
+	margin-top: 100px;
+	margin-bottom: 10px;
+}
+
+
+
+.form input {
+	border-radius: 7px;
+	border-color: gray;
+}
+.table {
+	background-color: rgb(242, 242, 242);
+	border-collapse: collapse;
+	border: 2px solid rgb(200,200,200);
+	letter-spacing: 1px;
+	font-size: 0.8rem;
+	text-align: center;
+}
+.table th {
+	border: 1px solid rgb(190,190,190);
+	padding: 10px 20px;
+	background-color: rgb(235,235,235);
+}
+
+
+
+.admin {
+	position: fixed;
+	display: flex;
+	right: 0%;
+	top: 0%;
+	left: 0%;
+	bottom: 99%;
+	padding-bottom: 35px;
+	background: rgb(235,235,235);
+}
+.admin p {
+	margin: 5px 100px 5px 10px;
+}
+.admin form {
+	margin-top: 5px;
+}
+
+
+
+#navigation {
+	margin-top: 7px;
+}
+
+.settings-list {
+	margin-top: 10px;
+	margin-left: -10px;
+	padding: 10px;
+	background-color: rgb(235,235,235);
+	border: 1px solid black;
+}
+
+
+
+.register {
+	position: fixed;
+	right: 0%;
+	top: 0%;
+	left: 0%;
+	bottom: 99%;
+	padding-bottom: 75px;
+	background: rgb(235,235,235);
+}
+
+
+
+
+.add_person {
+	margin-right: calc(100% - 300px);
+	margin-bottom: 50px;
+	padding-bottom: 10px;
+	background-color: rgb(242, 242, 242);
+	border: 1px solid black;
+}
+.add_person input[type="submit"] {
+	margin-left: 200px;
+	padding: 8px 20px;
+}
+
+
+
+
+
+.find_person {
+	margin-top: 20px;
+	margin-bottom: 40px;
+}
+
+
+
+
+
+.persons-table {
+	float: left;
+	display: flex;
+}
+
+.buttons {
+	display: inline-flex;
+	margin-top: 15px;
+	margin-bottom: 100px;
+	margin-left: 10px;
+	border: 1px solid rgb(190,190,190);
+	background-color: rgb(242, 242, 242);
+}
+.buttons #upload {
+	border: 1px solid rgb(190,190,190);
+}
+.buttons #delete_all {
+	margin-top: 15px;
+	margin-left: 10px;
+}
+
+#statistics {
+	padding-top: 12px;
+	float: right;
+	text-align: left;
+}
+#statistics td {
+	border: 1px solid rgb(190,190,190);
+	background-color: rgb(235,235,235);
+}

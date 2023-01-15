@@ -1,0 +1,15 @@
+body {
+    font-family: sans-serif;
+    color: gray;
+    background-color: rgb(250, 244, 244);
+}
+.form {
+	margin-right: 80%;
+	margin-bottom: 50px;
+	border: 1px solid black;
+    background-color: rgb(242, 242, 242);
+}
+.form input {
+    border-radius: 7px;
+    border-color: gray;
+}
