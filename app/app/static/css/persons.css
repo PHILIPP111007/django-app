@@ -113,9 +113,8 @@ a {
 .buttons #upload {
 	border: 1px solid rgb(190,190,190);
 }
-.buttons a {
-	margin-right: 20px;
-
+.buttons div {
+	margin: 10px 70px 10px 10px;
 }
 
 

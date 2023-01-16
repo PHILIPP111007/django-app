@@ -99,7 +99,19 @@
 						<td>{{ person.age }}</td>
 						<td>{{ person.height }}</td>
 						<td>{{ person.weight }}</td>
-						<td><a href="edit/{{ person.id }}"><input type="submit" value="Edit"></a> <a href="delete/{{ person.id }}/"><input type="submit" value="Delete"></a></td>
+						<td>
+							<div style="display: inline-flex;">
+								<form method="GET" action="edit/{{ person.id }}">
+									<input type="submit" value="Edit">
+								</form>
+							</div>
+							<div style="display: inline-flex;">
+								<form method="POST" action="delete/{{ person.id }}/">
+									{% csrf_token %}
+									<input type="submit" value="Delete">
+								</form>
+							</div>
+						</td>
 					</tr>
 				{% endfor %}
 				</tbody>
@@ -179,9 +191,12 @@
 			{% endif %}
 		</form>
 
-		<a href="delete_all/">
-			<button>Delete all data</button>
-		</a>
+		<div style="display: inline-flex;">
+			<form method="POST" action="delete_all/">
+				{% csrf_token %}
+				<input type="submit" value="Delete all data">
+			</form>
+		</div>
 		{% endif %}
 		{% if people %}
 			<a href="export_all/">
@@ -218,7 +233,20 @@
 							<td>{{ person.height }}</td>
 							<td>{{ person.weight }}</td>
 							{% if register_flag %}
-								<td><a href="edit/{{ person.id }}"><input type="submit" value="Edit"></a> <a href="delete/{{ person.id }}/"><input type="submit" value="Delete"></a></td>
+								<!-- <td><a href="edit/{{ person.id }}"><input type="submit" value="Edit"></a> <a href="delete/{{ person.id }}/"><input type="submit" value="Delete"></a></td> -->
+								<td>
+									<div style="display: inline-flex;">
+										<form method="GET" action="edit/{{ person.id }}">
+											<input type="submit" value="Edit">
+										</form>
+									</div>
+									<div style="display: inline-flex;">
+										<form method="POST" action="delete/{{ person.id }}/">
+											{% csrf_token %}
+											<input type="submit" value="Delete">
+										</form>
+									</div>
+								</td>
 							{% endif %}
 						</tr>
 					{% endfor %}

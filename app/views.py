@@ -128,23 +128,23 @@ def create(request):
 
 # deleting data about one character from the database
 def delete(request, id):
-	if register_flag:
+	if request.method == 'POST' and register_flag:
 		try:
 			person = Person.objects.get(id=id)
 			person.delete()
 			return HttpResponseRedirect(redirect_path)
 		except Person.DoesNotExist:
 			return HttpResponseNotFound(not_found_message)
-	elif not register_flag:
+	else:
 		return HttpResponse("<h2>You dont have permission to do this</h2>")
 
 
 # deleting all data from the database
 def delete_all(request):
-	if register_flag:
+	if request.method == "POST" and register_flag:
 		Person.objects.all().delete()
 		return HttpResponseRedirect(redirect_path)
-	elif not register_flag:
+	else:
 		return HttpResponse("<h2>You dont have permission to do this</h2>")
 
 
