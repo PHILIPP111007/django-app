@@ -123,7 +123,7 @@ def create(request):
 		Person.objects.create(name=name, surname=surname, age=age, height=height, weight=weight)
 		return HttpResponseRedirect(redirect_path)
 	elif not register_flag:
-		return HttpResponse("<h2>You dont have access to do this</h2>")
+		return HttpResponse("<h2>You dont have permission to do this</h2>")
 
 
 # deleting data about one character from the database
@@ -136,7 +136,7 @@ def delete(request, id):
 		except Person.DoesNotExist:
 			return HttpResponseNotFound(not_found_message)
 	elif not register_flag:
-		return HttpResponse("<h2>You dont have access to do this</h2>")
+		return HttpResponse("<h2>You dont have permission to do this</h2>")
 
 
 # deleting all data from the database
@@ -145,7 +145,7 @@ def delete_all(request):
 		Person.objects.all().delete()
 		return HttpResponseRedirect(redirect_path)
 	elif not register_flag:
-		return HttpResponse("<h2>You dont have access to do this</h2>")
+		return HttpResponse("<h2>You dont have permission to do this</h2>")
 
 
 # edit record data
@@ -190,7 +190,7 @@ def edit(request, id):
 			return render(request, "edit.html", {"editform": editform, 'edit_person': edit_person})
 
 		elif not register_flag:
-			return HttpResponse("<h2>You dont have access to do this</h2>")
+			return HttpResponse("<h2>You dont have permission to do this</h2>")
 			
 	except Person.DoesNotExist:
 		return HttpResponseNotFound(not_found_message)
