@@ -57,16 +57,18 @@
 			</form>
 		</div>
 
-		<div class="add_person">
-			<form method="GET" action="find_person/">
-				{% csrf_token %}
-				<caption>Find a person:</caption>
-				<table class="form">
-					{{ findform }}
-				</table>
-				<input type="submit" value="Find">
-			</form>
-		</div>
+		{% if people %}
+			<div class="add_person">
+				<form method="GET" action="find_person/">
+					{% csrf_token %}
+					<caption>Find a person:</caption>
+					<table class="form">
+						{{ findform }}
+					</table>
+					<input type="submit" value="Find">
+				</form>
+			</div>
+		{% endif %}
 	{% endif %}
 
 	{% if find_person_flag %}

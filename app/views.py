@@ -34,51 +34,43 @@ def index(request):
 # creates statistics data
 def make_statistics():
 	people = Person.objects.all()
-	len_people = people.count()
+	if people:
+		len_people = people.count()
 
-	try:
 		avg_age = round(tuple(Person.objects.aggregate(Avg("age")).values())[0], 2)
-	except TypeError:
-		avg_age = None
-	
-	try:
+		min_age = tuple(Person.objects.aggregate(Min("age")).values())[0]
+		max_age = tuple(Person.objects.aggregate(Max("age")).values())[0]
+		sum_age = tuple(Person.objects.aggregate(Sum("age")).values())[0]
+
 		avg_height = round(tuple(Person.objects.aggregate(Avg("height")).values())[0], 2)
-	except TypeError:
-		avg_height = None
-	
-	try:
+		min_height = tuple(Person.objects.aggregate(Min("height")).values())[0]
+		max_height = tuple(Person.objects.aggregate(Max("height")).values())[0]
+		sum_height = tuple(Person.objects.aggregate(Sum("height")).values())[0]
+
 		avg_weight = round(tuple(Person.objects.aggregate(Avg("weight")).values())[0], 2)
-	except TypeError:
-		avg_weight = None
+		min_weight = tuple(Person.objects.aggregate(Min("weight")).values())[0]
+		max_weight = tuple(Person.objects.aggregate(Max("weight")).values())[0]
+		sum_weight = tuple(Person.objects.aggregate(Sum("weight")).values())[0]
 
-	min_age = tuple(Person.objects.aggregate(Min("age")).values())[0]
-	max_age = tuple(Person.objects.aggregate(Max("age")).values())[0]
-	sum_age = tuple(Person.objects.aggregate(Sum("age")).values())[0]
+		statistics = {
+			'len_people': len_people, 
+			'avg_age': avg_age, 
+			'min_age': min_age, 
+			'max_age': max_age, 
+			'sum_age': sum_age,
 
-	min_height = tuple(Person.objects.aggregate(Min("height")).values())[0]
-	max_height = tuple(Person.objects.aggregate(Max("height")).values())[0]
-	sum_height = tuple(Person.objects.aggregate(Sum("height")).values())[0]
+			'avg_height': avg_height, 
+			'min_height': min_height, 
+			'max_height': max_height, 
+			'sum_height': sum_height,
 
-	min_weight = tuple(Person.objects.aggregate(Min("weight")).values())[0]
-	max_weight = tuple(Person.objects.aggregate(Max("weight")).values())[0]
-	sum_weight = tuple(Person.objects.aggregate(Sum("weight")).values())[0]
-
-	statistics = {'len_people': len_people, 
-				'avg_age': avg_age, 
-				'min_age': min_age, 
-				'max_age': max_age, 
-				'sum_age': sum_age,
-
-				'avg_height': avg_height, 
-				'min_height': min_height, 
-				'max_height': max_height, 
-				'sum_height': sum_height,
-
-				'avg_weight': avg_weight, 
-				'min_weight': min_weight, 
-				'max_weight': max_weight, 
-				'sum_weight': sum_weight
-				}
+			'avg_weight': avg_weight, 
+			'min_weight': min_weight, 
+			'max_weight': max_weight, 
+			'sum_weight': sum_weight
+		}
+	else:
+		statistics = {'len_people': 0}
 	return make_result_dict(people=people, statistics=statistics)
 
 
@@ -90,19 +82,20 @@ def make_result_dict(people, statistics):
 	global find_person_flag
 
 
-	result_dict = {'userform': UserForm(), 
-				'adminform': AdminForm(), 
-				'uploadform': UploadForm(), 
-				'people': people, 
-				'find_person_flag': False, 
-				'find_persons': find_persons, 
-				'findform': FindForm(), 
-				'statistics': statistics, 
-				'register_flag': register_flag, 
-				'login': login, 
-				'register_error': False, 
-				'csv_error': False
-				}
+	result_dict = {
+		'userform': UserForm(), 
+		'adminform': AdminForm(), 
+		'uploadform': UploadForm(), 
+		'people': people, 
+		'find_person_flag': False, 
+		'find_persons': find_persons, 
+		'findform': FindForm(), 
+		'statistics': statistics, 
+		'register_flag': register_flag, 
+		'login': login, 
+		'register_error': False, 
+		'csv_error': False
+	}
 
 	if register_error:
 		register_error = False
@@ -266,12 +259,13 @@ def make_csv_file_from_sql(data):
 	writer.writeheader()
 
 	for obj in data:
-		writer.writerow({'id': obj.id, 
-						'name': obj.name, 
-						'surname': obj.surname, 
-						'age': obj.age, 
-						'height': obj.height, 
-						'weight': obj.weight
+		writer.writerow({
+			'id': obj.id, 
+			'name': obj.name, 
+			'surname': obj.surname, 
+			'age': obj.age, 
+			'height': obj.height, 
+			'weight': obj.weight
 		})
 	return response
 
