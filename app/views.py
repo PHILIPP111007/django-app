@@ -16,24 +16,25 @@ register_error = False
 csv_error = False
 find_person_flag = False
 find_persons = None
-data = None
+data_for_exporting = None
 redirect_path = '/app/form/'
 not_found_message = '<h2>Data not found</h2>'
 
 
 # home page output
-# index() also calls make_statistics(), which activates the last function in the chain: make_result_dict()
+# index() also calls make_statistics() and make_result_dict()
 #
 # 1) make_statistics() creates statistics data
 # 2) make_result_dict() creates a result_dict, which index() returns as a context attribute of the render function
 def index(request):
-	result_dict = make_statistics()
+	people = Person.objects.all()
+	result_dict = make_result_dict(people)
+	result_dict['statistics'] =  make_statistics(people)
 	return render(request, 'persons.html', result_dict)
 
 
 # creates statistics data
-def make_statistics():
-	people = Person.objects.all()
+def make_statistics(people):
 	if people:
 		len_people = people.count()
 
@@ -71,11 +72,11 @@ def make_statistics():
 		}
 	else:
 		statistics = {'len_people': 0}
-	return make_result_dict(people=people, statistics=statistics)
+	return statistics
 
 
 # creates a result_dict, which index() returns as a context attribute of the render function
-def make_result_dict(people, statistics):
+def make_result_dict(people):
 	global register_flag
 	global register_error
 	global csv_error
@@ -90,7 +91,6 @@ def make_result_dict(people, statistics):
 		'find_person_flag': False, 
 		'find_persons': find_persons, 
 		'findform': FindForm(), 
-		'statistics': statistics, 
 		'register_flag': register_flag, 
 		'login': login, 
 		'register_error': False, 
@@ -236,13 +236,14 @@ def upload(request):
 		else:
 			decoded_file = csv_file.read().decode('utf-8')
 			io_string = io.StringIO(decoded_file)
-			for line in csv.reader(io_string, delimiter=',', quotechar='|'):
+
+			for line in csv.DictReader(io_string, delimiter=',', quotechar='|'):
 				try:
-					name = line[0]
-					surname = line[1]
-					age = line[2]
-					height = line[3]
-					weight = line[4]
+					name = line.get('name', 'undefined')
+					surname = line.get('surname', 'undefined')
+					age = line.get('age', 'undefined')
+					height = line.get('height', 'undefined')
+					weight = line.get('weight', 'undefined')
 					Person.objects.create(name=name, surname=surname, age=age, height=height, weight=weight)
 				except Exception:
 					pass
@@ -250,15 +251,15 @@ def upload(request):
 
 
 # creating an HttpResponse object with the corresponding CSV header
-def make_csv_file_from_sql(data):
+def make_csv_file_from_sql(data_for_exporting):
 	response = HttpResponse(content_type='text/csv')
 	response['Content-Disposition'] = 'attachment; filename="data.csv"'
 
-	fieldnames = ['id', 'name', 'surname', 'age', 'height', 'weight']
+	fieldnames = ('id', 'name', 'surname', 'age', 'height', 'weight')
 	writer = csv.DictWriter(response, fieldnames=fieldnames)
 	writer.writeheader()
 
-	for obj in data:
+	for obj in data_for_exporting:
 		writer.writerow({
 			'id': obj.id, 
 			'name': obj.name, 
@@ -274,22 +275,22 @@ def make_csv_file_from_sql(data):
 # returns the make_csv_file_from_sql() function, which creates a .csv file
 def export_all(request):
 	if request.method == 'GET':
-		data = Person.objects.all()
-		return make_csv_file_from_sql(data)
+		data_for_exporting = Person.objects.all()
+		return make_csv_file_from_sql(data_for_exporting)
 
 
 # the first function in the process of creating a .csv file from RESULT table to download
 # returns the make_csv_file_from_sql() function, which creates a .csv file
 def export_data_from_find_person(request):
 	if request.method == 'GET':
-		return make_csv_file_from_sql(data)
+		return make_csv_file_from_sql(data_for_exporting)
 
 
 # record search
 def find_person(request):
 	global find_person_flag
 	global find_persons
-	global data
+	global data_for_exporting
 
 
 	if request.method == 'GET':
@@ -298,7 +299,7 @@ def find_person(request):
 			find_persons = Person.objects.filter(id=id)
 			if find_persons:
 				find_person_flag = True
-				data = find_persons
+				data_for_exporting = find_persons
 			else:
 				return HttpResponseNotFound(not_found_message)
 		else:
@@ -327,7 +328,7 @@ def find_person(request):
 			if len(result_str) > 14:
 				find_persons = eval(result_str)
 				if find_persons:
-					data = find_persons
+					data_for_exporting = find_persons
 					find_person_flag = True
 				else:
 					return HttpResponseNotFound(not_found_message)
