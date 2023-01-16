@@ -7,18 +7,18 @@ import csv
 import io
 
 
+
 # Create your views here.
 
 # global variables
-register_flag = False
-login = 'undefined'
-register_error = False
-csv_error = False
-find_person_flag = False
-find_persons = None
-data_for_exporting = None
-redirect_path = '/app/form/'
-not_found_message = '<h2>Data not found</h2>'
+register_flag = False  # Describes if the user is registered or not
+login = 'undefined'  # Contains login-name to be shown on the admin page
+register_error = False  # Throws an error if incorrect data is entered during registration
+csv_error = False  # Throws an error if incorrect data was uploaded to table
+find_person_flag = False  # If the data search highlights a result, this parameter is set to True
+find_persons = None  # Variable that contains data from search result
+redirect_path = '/app/form/'  # For HttpResponseRedirect()
+not_found_message = '<h2 style="font-family: sans-serif;">Data not found</h2>'  # For HttpResponseNotFound()
 
 
 # home page output
@@ -275,22 +275,20 @@ def make_csv_file_from_sql(data_for_exporting):
 # returns the make_csv_file_from_sql() function, which creates a .csv file
 def export_all(request):
 	if request.method == 'GET':
-		data_for_exporting = Person.objects.all()
-		return make_csv_file_from_sql(data_for_exporting)
+		return make_csv_file_from_sql(Person.objects.all())
 
 
 # the first function in the process of creating a .csv file from RESULT table to download
 # returns the make_csv_file_from_sql() function, which creates a .csv file
 def export_data_from_find_person(request):
 	if request.method == 'GET':
-		return make_csv_file_from_sql(data_for_exporting)
+		return make_csv_file_from_sql(find_persons)
 
 
 # record search
 def find_person(request):
 	global find_person_flag
 	global find_persons
-	global data_for_exporting
 
 
 	if request.method == 'GET':
@@ -299,7 +297,6 @@ def find_person(request):
 			find_persons = Person.objects.filter(id=id)
 			if find_persons:
 				find_person_flag = True
-				data_for_exporting = find_persons
 			else:
 				return HttpResponseNotFound(not_found_message)
 		else:
@@ -328,7 +325,6 @@ def find_person(request):
 			if len(result_str) > 14:
 				find_persons = eval(result_str)
 				if find_persons:
-					data_for_exporting = find_persons
 					find_person_flag = True
 				else:
 					return HttpResponseNotFound(not_found_message)
