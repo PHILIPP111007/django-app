@@ -24,3 +24,5 @@ After logging in as a system administrator you can:
 I have uploaded the random_data.csv file for you to familiarize yourself with the functionality of the application
 
 Have fun!
+
+<img src="./images_for_README/img_1.png" alt="Alt text" title="Optional title" height='600'>
